@@ -8,7 +8,7 @@ from requests.packages.urllib3 import disable_warnings
 from async_util import async_exec
 from cache_util import cache
 from config import *
-from dns_util import activate, register
+# from dns_util import activate, register
 from qiniu_util import Qiniu
 from request_util import requests_obj
 
@@ -16,8 +16,8 @@ disable_warnings()
 
 
 def spider_lncn():
-    register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
-    activate()
+#     register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
+#     activate()
     response1 = requests_obj.get('https://lncn.org/api/ssrList')
     return json.loads(response1.text)
 
