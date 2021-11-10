@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 from typing import List, Tuple
 
 from Crypto.Cipher import AES
@@ -16,7 +17,11 @@ disable_warnings()
 
 
 def spider_lncn():
-    register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
+    if os.environ.get('LNCN', ''):
+        register(('lncn.org', os.environ['LNCN']))
+        logging.info(os.environ['LNCN'])
+    else:
+        register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
     activate()
     response1 = requests_obj.get('https://lncn.org/api/ssrList')
     return json.loads(response1.text)
