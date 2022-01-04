@@ -28,6 +28,7 @@ def spider_lncn():
     # return json.loads(response1.text)
     # lncn更新了，api接口被禁，只能通过解析页面得到订阅地址
     response2 = requests_obj.get('https://lncn.org')
+    logging.info(response2.text)
     return {
         'date': re.compile('(?<=date:")[^"]*').findall(response2.text)[0],
         'code': re.compile('(?<=code:")[^"]*').findall(response2.text)[0],
