@@ -33,7 +33,7 @@ def spider_lncn():
     #     'code': re.compile('(?<=code:")[^"]*').findall(response2.text)[0],
     #     'ssrs': re.compile('(?<=ssrs:")[^"]*').findall(response2.text)[0].encode('u8').decode("unicode_escape"),
     # }
-    response3 = requests.get('https://lncn.org/api/ssr-list')
+    response3 = requests_obj.get('https://lncn.org/api/ssr-list')
     return json.loads(response3.text)
 
 
