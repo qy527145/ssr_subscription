@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import re
 from typing import List, Tuple
 
 from Crypto.Cipher import AES
@@ -23,10 +24,10 @@ def spider_lncn():
     else:
         register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
     activate()
-    # response1 = requests.get('https://lncn.org/api/ssrList')
+    # response1 = requests_obj.get('https://lncn.org/api/ssrList')
     # return json.loads(response1.text)
     # lncn更新了，api接口被禁，只能通过解析页面得到订阅地址
-    response2 = requests.get('https://lncn.org')
+    response2 = requests_obj.get('https://lncn.org')
     return {
         'date': re.compile('(?<=date:")[^"]*').findall(response2.text)[0],
         'code': re.compile('(?<=code:")[^"]*').findall(response2.text)[0],
