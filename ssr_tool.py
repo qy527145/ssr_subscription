@@ -23,8 +23,15 @@ def spider_lncn():
     else:
         register(('lncn.org', get_str_config('DNS', 'lncn', '162.159.211.93')))
     activate()
-    response1 = requests_obj.get('https://lncn.org/api/ssrList')
-    return json.loads(response1.text)
+    # response1 = requests.get('https://lncn.org/api/ssrList')
+    # return json.loads(response1.text)
+    # lncn更新了，api接口被禁，只能通过解析页面得到订阅地址
+    response2 = requests.get('https://lncn.org')
+    return {
+        'date': re.compile('(?<=date:")[^"]*').findall(response2.text)[0],
+        'code': re.compile('(?<=code:")[^"]*').findall(response2.text)[0],
+        'ssrs': re.compile('(?<=ssrs:")[^"]*').findall(response2.text)[0].encode('u8').decode("unicode_escape"),
+    }
 
 
 @cache()
