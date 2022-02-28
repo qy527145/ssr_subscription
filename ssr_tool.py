@@ -42,7 +42,11 @@ def spider_lncn():
     #     'ssrs': re.compile('(?<=ssrs:")[^"]*').findall(response2.text)[0].encode('u8').decode("unicode_escape"),
     # }
     response3 = requests_obj.get('https://lncn.org/api/ssr-list')
-    return json.loads(response3.text)
+    try:
+        return json.loads(response3.text)
+    except Exception as e:
+        logging.exception(e)
+        raise Exception('请求被cf拦截了')
 
 
 @cache()
