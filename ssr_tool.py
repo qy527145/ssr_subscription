@@ -1,7 +1,7 @@
 import base64
 import json
 import os
-import re
+#import re
 from typing import List, Tuple
 
 from Crypto.Cipher import AES
@@ -15,6 +15,14 @@ from qiniu_util import Qiniu
 from request_util import requests_obj
 
 disable_warnings()
+
+
+def bytes2str(bs: bytes) -> str:
+    return base64.b64encode(bs).decode() if isinstance(bs, bytes) else bs
+
+
+def str2bytes(s: str) -> bytes:
+    return base64.b64decode(s + len(s) % 4 * '=') if isinstance(s, str) else s
 
 
 def spider_lncn():
@@ -45,10 +53,9 @@ def aes_decrypt(key: str, ciphertext: str) -> str:
     :param ciphertext:
     :return: 解密后的明文字符串
     """
-    aes = AES.new(key.encode(), AES.MODE_ECB)
-    plaintext = aes.decrypt(base64.b64decode(ciphertext)).decode().replace('\x0c', '').replace('\x10', '')
-    plaintext = plaintext[:plaintext.find('}]') + 2]
-    return plaintext
+    aes = AES.new(str2bytes(key), AES.MODE_ECB)
+    plaintext = aes.decrypt(str2bytes(ciphertext))
+    return plaintext[:-plaintext[-1]].decode()
 
 
 def get_ssr_list() -> Tuple[str, list]:
@@ -59,7 +66,10 @@ def get_ssr_list() -> Tuple[str, list]:
     lncn_data = spider_lncn()
     if not hasattr(get_ssr_list, 'date') or get_ssr_list.date != lncn_data['date']:
         # 需要更新缓存
-        plaintext = aes_decrypt(key=base64.b64decode(lncn_data['code'] + '===').decode(), ciphertext=lncn_data['ssrs'])
+        # plaintext = aes_decrypt(key=base64.b64decode(lncn_data['code'] + '===').decode(), ciphertext=lncn_data['ssrs'])
+        # 2022年2月28号修改，lncn网站算法更新，key放在了ssrs中，code参数已取消
+        ciphertext, key = lncn_data['ssrs'].split('2022')
+        plaintext = aes_decrypt(key=key, ciphertext=ciphertext)
         plaintext_json = json.loads(plaintext)
         get_ssr_list.date = lncn_data['date']
         get_ssr_list.data = [i['url'] for i in plaintext_json]
