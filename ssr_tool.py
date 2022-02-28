@@ -45,7 +45,7 @@ def spider_lncn():
     try:
         return json.loads(response3.text)
     except Exception as e:
-        logging.exception(e)
+        logging.error(response3.text)
         raise Exception('请求被cf拦截了')
 
 
