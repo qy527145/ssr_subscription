@@ -12,7 +12,7 @@ from typing import Union, Tuple, List
 
 bak_getaddrinfo = socket.getaddrinfo
 dns_records = {
-    'lncn.org': '162.159.210.93'
+    'lncn.org': '104.16.58.66'
 }
 
 
