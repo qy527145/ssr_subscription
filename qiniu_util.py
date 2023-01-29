@@ -2,7 +2,7 @@ import os
 import time
 from typing import List, Dict, Any
 
-from qiniu import Auth, BucketManager, etag, put_file, put_data
+from qiniu import Auth, BucketManager, etag, put_file, put_data, CdnManager
 from qiniu.services.cdn.manager import create_timestamp_anti_leech_url
 
 from config import logging
@@ -22,6 +22,7 @@ class Qiniu(object):
         self.auth_obj: Auth = Auth(self.access_key, self.secret_key)
         self.bucket_manager: BucketManager = BucketManager(self.auth_obj)
         buckets = self.bucket_manager.list_bucket('')[0]
+        self.cdn_manager: CdnManager = CdnManager(self.auth_obj)
         if len(buckets) > 0:
             self.bucket_name = buckets[0].get('id')
         else:
@@ -113,6 +114,14 @@ class Qiniu(object):
         link = create_timestamp_anti_leech_url(
             self.domain, file_name, None, encrypt_key, deadline)
         return f'http://{link}'
+
+    def refresh(self, file_name: str) -> str:
+        """
+        刷新七牛云
+        :param file_name:
+        :return:
+        """
+        self.cdn_manager.refresh_urls([f'http://{self.domain}/{file_name}'])
 
 
 if __name__ == '__main__':
