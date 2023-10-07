@@ -68,16 +68,8 @@ def get_ssr_list() -> Tuple[str, list]:
     :return: ssr节点地址列表
     """
     lncn_data = spider_lncn()
-    if not hasattr(get_ssr_list, 'date') or get_ssr_list.date != lncn_data['date']:
-        # 需要更新缓存
-        # plaintext = aes_decrypt(key=base64.b64decode(lncn_data['code'] + '===').decode(), ciphertext=lncn_data['ssrs'])
-        # 2022年2月28号修改，lncn网站算法更新，key放在了ssrs中，code参数已取消
-        ciphertext, key = lncn_data['ssrs'].split('2022')
-        plaintext = aes_decrypt(key=key, ciphertext=ciphertext)
-        plaintext_json = json.loads(plaintext)
-        get_ssr_list.date = lncn_data['date']
-        get_ssr_list.data = [i['url'] for i in plaintext_json]
-    return get_ssr_list.date, get_ssr_list.data
+    # 2023.9 api响应变更成了明文
+    return [i['shareLink'] for i in lncn_data]
 
 
 #@async_exec
@@ -103,10 +95,10 @@ def update_qiniu(ssr_list: List[str]) -> None:
 
 
 if __name__ == '__main__':
-    date, ssr_list = get_ssr_list()
+    ssr_list = get_ssr_list()
     logging.info('爬取ssr节点')
     if ssr_list:
-        logging.info(f'爬取到源站节点，源站更新时间为：{date}')
+        logging.info(f'爬取到源站节点')
         logging.info('更新七牛云订阅内容')
         update_qiniu(ssr_list)
     else:
