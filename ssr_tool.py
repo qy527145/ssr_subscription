@@ -89,9 +89,10 @@ def update_qiniu(ssr_list: List[str]) -> None:
             update_qiniu.qiniu_obj = Qiniu(ak, sk)
         else:
             update_qiniu.qiniu_obj = Qiniu()
-    update_qiniu.qiniu_obj.upload_stream_file(base64.urlsafe_b64encode('\n'.join(ssr_list).encode()), 'node.txt')
+    sub_file = 'nodes/lncn.txt'
+    update_qiniu.qiniu_obj.upload_stream_file(base64.urlsafe_b64encode('\n'.join(ssr_list).encode()), sub_file)
     logging.info('七牛云上传成功')
-    update_qiniu.qiniu_obj.refresh('node.txt')
+    update_qiniu.qiniu_obj.refresh(sub_file)
     logging.info('CDN刷新成功')
     pass
 
