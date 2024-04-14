@@ -81,8 +81,8 @@ def update_qiniu(ssr_list: List[str]) -> None:
     :return: None
     """
     if not hasattr(update_qiniu, 'qiniu_obj'):
-        ak = get_str_config('QINIU', 'ak', '')
-        sk = get_str_config('QINIU', 'sk', '')
+        ak = os.environ.get('QINIU_AK', '')
+        sk = os.environ.get('QINIU_SK', '')
         if ak and sk:
             update_qiniu.qiniu_obj = Qiniu(ak, sk)
         else:
