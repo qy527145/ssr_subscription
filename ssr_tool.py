@@ -84,6 +84,8 @@ def update_qiniu(ssr_list: List[str]) -> None:
         ak = os.environ.get('QINIU_AK', '')
         sk = os.environ.get('QINIU_SK', '')
         if ak and sk:
+            logging.info('ak: '+ak[:5]+'***')
+            logging.info('sk: '+sk[:5]+'***')
             update_qiniu.qiniu_obj = Qiniu(ak, sk)
         else:
             update_qiniu.qiniu_obj = Qiniu()
